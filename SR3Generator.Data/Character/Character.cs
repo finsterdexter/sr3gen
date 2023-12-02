@@ -1,4 +1,5 @@
 ﻿using SR3Generator.Data.Gear;
+using SR3Generator.Data.Magic;
 
 namespace SR3Generator.Data.Character
 {
@@ -9,6 +10,7 @@ namespace SR3Generator.Data.Character
         public Identity Identity { get; set; } = new Identity();
         public List<Lifestyle> Lifestyles { get; set; } = new List<Lifestyle>();
         public Dictionary<AttributeName, Attribute> Attributes { get; set; }
+        public Dictionary<DicePoolType, DicePool> DicePools { get; set; } = new Dictionary<DicePoolType, DicePool>();
         public Dictionary<string, Skill> ActiveSkills { get; set; } = new Dictionary<string, Skill>();
         public Dictionary<string, Skill> KnowledgeSkills { get; set; } = new Dictionary<string, Skill>();
         public Dictionary<Guid, Weapon> Weapons { get; set; } = new Dictionary<Guid, Weapon>();
@@ -24,6 +26,14 @@ namespace SR3Generator.Data.Character
         //     Bonded Spirits
         //         Watchers
         //         Ally Spirit
+        public MagicAspect? MagicAspect { get; set; } = null;
+        public Dictionary<string, Spell> Spells { get; set; } = new Dictionary<string, Spell>();
+        public Dictionary<string, AdeptPower> AdeptPowers { get; set; } = new Dictionary<string, AdeptPower>();
+        public Dictionary<Guid, BondedSpirit> BondedSpirits { get; set; } = new Dictionary<Guid, BondedSpirit>();
+        public int WatcherSpirits { get; set; }
+        public AllySpirit AllySpirit { get; set; } = null;
+
+
         // Foci
         // Vehicles
         // Contacts

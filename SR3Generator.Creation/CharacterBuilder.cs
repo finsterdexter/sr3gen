@@ -8,14 +8,15 @@ namespace SR3Generator.Creation
 {
     public class CharacterBuilder
     {
-        private CharacterValidator _characterValidator = new CharacterValidator();
-        private int AttributePointsAllowance = 0;
-        private int SkillPointsAllowance = 0;
-        private int ResourcesAllowance = 0;
-        private List<Race> AllowedRaces = new List<Race>() { RaceDatabase.PlayerRaces.First(r => r.Name == RaceName.Human) };
+        private CharacterPriorityValidator _characterValidator = new CharacterPriorityValidator();
 
         public Character Character { get; set; }
         public List<ValidationIssue> ValidationIssues { get; set; } = new List<ValidationIssue>();
+        public int AttributePointsAllowance { get; set; }
+        public int SkillPointsAllowance { get; set; }
+        public int ResourcesAllowance { get; set; }
+        public List<Race> RacesAllowed { get; set; }
+        public List<MagicAspect> MagicAspectsAllowed { get; set; }
 
         public CharacterBuilder()
         {
@@ -24,7 +25,29 @@ namespace SR3Generator.Creation
 
         public CharacterBuilder WithPriorities(List<Priority> priorities)
         {
-
+            foreach (var priority in priorities)
+            {
+                if (priority.Type == PriorityType.Attributes)
+                {
+                    AttributePointsAllowance = priority.GetAttributePoints();
+                }
+                else if (priority.Type == PriorityType.Skills)
+                {
+                    SkillPointsAllowance = priority.GetSkillPoints();
+                }
+                else if (priority.Type == PriorityType.Resources)
+                {
+                    ResourcesAllowance = priority.GetNuyen();
+                }
+                else if (priority.Type == PriorityType.Race)
+                {
+                    RacesAllowed = priority.GetAllowedRaces();
+                }
+                else if (priority.Type == PriorityType.Magic)
+                {
+                    MagicAspectsAllowed = priority.GetAllowedMagicAspects();
+                }
+            }
             return this;
         }
 
@@ -43,11 +66,10 @@ namespace SR3Generator.Creation
             // manage troll dermal armor
             if (race.Name == RaceName.Troll)
             {
-                Character.Gear.Add(new Augmentation
+                var dermalArmor = new Augmentation
                 {
                     Name = "Dermal Armor",
                     CategoryTree = new List<string> { "BODYWARE", "Dermal Plating/Sheath/Ruthenium" },
-                    Availability = null,
                     Book = "sr3",
                     Page = 56,
                     Notes = "Natural Troll Dermal Armor",
@@ -60,11 +82,12 @@ namespace SR3Generator.Creation
                             ModValue = 1
                         }
                     }
-                });
+                };
+                this.AddNaturalAugmentation(dermalArmor);
             }
             else
             {
-                Character.Gear.RemoveAll(g => g.Name == "Dermal Armor");
+                this.RemoveNaturalAugmentation("Dermal Armor");
             }
 
             return this;
@@ -184,6 +207,22 @@ namespace SR3Generator.Creation
         public CharacterBuilder AddActiveSkill(Skill skill)
         {
             Character.ActiveSkills.Add(skill.Name, skill);
+            return this;
+        }
+        public CharacterBuilder RemoveActiveSkill(string name)
+        {
+            Character.ActiveSkills.Remove(name);
+            return this;
+        }
+
+        public CharacterBuilder AddKnowledgeSkill(Skill skill)
+        {
+            Character.KnowledgeSkills.Add(skill.Name, skill);
+            return this;
+        }
+        public CharacterBuilder RemoveKnowledgeSkill(string name)
+        {
+            Character.KnowledgeSkills.Remove(name);
             return this;
         }
 

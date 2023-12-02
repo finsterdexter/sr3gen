@@ -28,5 +28,6 @@ namespace SR3Generator.Creation.Validation
         Resources,
         Magic,
         Equipment,
+        Race,
     }
 }

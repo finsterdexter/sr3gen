@@ -14,6 +14,7 @@ namespace SR3Generator.Data.Character
 
     public enum DicePoolType
     {
+        Karma,
         Combat,
         Control,
         Hacking,
