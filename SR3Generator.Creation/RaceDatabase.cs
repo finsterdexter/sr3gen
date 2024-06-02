@@ -19,8 +19,8 @@ namespace SR3Generator.Creation
                 new Race {Name = RaceName.Elf, 
                     AttributeMods = new List<AttributeMod>()
                     {
-                        new AttributeMod {AttributeName = AttributeName.Quickness, ModValue = 1},
-                        new AttributeMod {AttributeName = AttributeName.Charisma, ModValue = 2}
+                        new(AttributeName.Quickness, 1),
+                        new(AttributeName.Charisma, 2)
                     }, 
                     Extras = new List<string>()
                     {
@@ -30,9 +30,9 @@ namespace SR3Generator.Creation
                 new Race {Name = RaceName.Dwarf, 
                     AttributeMods = new List<AttributeMod>()
                     {
-                        new AttributeMod {AttributeName = AttributeName.Body, ModValue = 1},
-                        new AttributeMod {AttributeName = AttributeName.Strength, ModValue = 2},
-                        new AttributeMod {AttributeName = AttributeName.Willpower, ModValue = 1}
+                        new(AttributeName.Body, 1),
+                        new(AttributeName.Strength, 2),
+                        new(AttributeName.Willpower, 1)
                     }, 
                     Extras = new List<string>()
                     {
@@ -43,10 +43,10 @@ namespace SR3Generator.Creation
                 new Race {Name = RaceName.Ork, 
                     AttributeMods = new List<AttributeMod>()
                     {
-                        new AttributeMod {AttributeName = AttributeName.Body, ModValue = 3},
-                        new AttributeMod {AttributeName = AttributeName.Strength, ModValue = 2},
-                        new AttributeMod {AttributeName = AttributeName.Charisma, ModValue = -1},
-                        new AttributeMod {AttributeName = AttributeName.Intelligence, ModValue = -1}
+                        new(AttributeName.Body, 3),
+                        new(AttributeName.Strength, 2),
+                        new(AttributeName.Charisma, -1),
+                        new(AttributeName.Intelligence, -1)
                     }, 
                     Extras = new List<string>()
                     {
@@ -56,11 +56,16 @@ namespace SR3Generator.Creation
                 new Race {Name = RaceName.Troll,
                     AttributeMods = new List<AttributeMod>()
                     {
-                        new AttributeMod {AttributeName = AttributeName.Body, ModValue = 5},
-                        new AttributeMod {AttributeName = AttributeName.Quickness, ModValue = -1},
-                        new AttributeMod {AttributeName = AttributeName.Strength, ModValue = 4},
-                        new AttributeMod {AttributeName = AttributeName.Intelligence, ModValue = -2},
-                        new AttributeMod {AttributeName = AttributeName.Charisma, ModValue = -2},
+                        //new AttributeMod {AttributeName = AttributeName.Body, ModValue = 5},
+                        //new AttributeMod {AttributeName = AttributeName.Quickness, ModValue = -1},
+                        //new AttributeMod {AttributeName = AttributeName.Strength, ModValue = 4},
+                        //new AttributeMod {AttributeName = AttributeName.Intelligence, ModValue = -2},
+                        //new AttributeMod {AttributeName = AttributeName.Charisma, ModValue = -2},
+                        new(AttributeName.Body, 5),
+                        new(AttributeName.Quickness, -1),
+                        new(AttributeName.Strength, 4),
+                        new(AttributeName.Intelligence, -2),
+                        new(AttributeName.Charisma, -1),
                     }, 
                     Extras = new List<string>()
                     {

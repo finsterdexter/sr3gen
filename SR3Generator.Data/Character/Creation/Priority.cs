@@ -17,6 +17,13 @@ namespace SR3Generator.Data.Character.Creation
                 return BenefitsGetterFunc(this);
             }
         }
+
+        public Priority(PriorityType type, PriorityRank rank)
+        {
+            Type = type;
+            Rank = rank;
+        }
+
         public Func<Priority, string> BenefitsGetterFunc { get; set; } = (p) => { throw new NotImplementedException("BenefitsGetterFunc not set on Priority"); };
     }
 

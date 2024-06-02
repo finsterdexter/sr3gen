@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SR3Generator.Data.Character;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,5 +20,6 @@ namespace SR3Generator.Data.Gear
         public string Legality { get; set; }
         public string Notes { get; set; }
         public int? Rating { get; set; }
+        public List<Mod> Mods { get; set; } = new List<Mod>();
     }
 }

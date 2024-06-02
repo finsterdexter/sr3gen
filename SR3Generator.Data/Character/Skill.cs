@@ -9,17 +9,33 @@ namespace SR3Generator.Data.Character
     public class Skill
     {
         public string Name { get; set; }
-        public string Attribute { get; set; }
+        public AttributeName Attribute { get; set; }
         public int BaseValue { get; set; }
         public string? Specialization { get; set; }
-        public int AugmentedModValue { get; set; }
 
-        public int Rating
+        public Skill(string name, AttributeName attribute)
         {
-            get
+            Name = name;
+            Attribute = attribute;
+        }
+
+        public int GetAugmentedValue(Character character)
+        {
+            int modValue = 0;
+
+            // check gear mods
+            foreach (var mod in character.Gear.Values.Where(g => g.Mods != null).SelectMany(g => g.Mods.Where(m => m is SkillMod s && s.SkillName == Name)))
             {
-                return BaseValue + AugmentedModValue;
+                modValue += mod.ModValue;
             }
+
+            // check natural augmentations
+            foreach (var mod in character.NaturalAugmentations.Values.Where(g => g.Mods != null).SelectMany(g => g.Mods.Where(m => m is SkillMod a && a.SkillName == Name)))
+            {
+                modValue += mod.ModValue;
+            }
+
+            return BaseValue + modValue;
         }
     }
 }

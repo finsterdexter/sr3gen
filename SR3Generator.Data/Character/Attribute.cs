@@ -10,25 +10,26 @@ namespace SR3Generator.Data.Character
     {
         public AttributeName Name { get; set; }
         public AttributeType Type { get; set; }
-        public decimal BaseValue { get; set; }
-        public decimal RaceModValue { get; set; }
-        public decimal AugmentedModValue { get; set; }
+        public int BaseValue { get; set; }
         public bool Stressed { get; set; }
 
-        public decimal NaturalValue
+        public int GetAugmentedValue(Character character)
         {
-            get
-            {
-                return BaseValue + RaceModValue;
-            }
-        }
+            int modValue = 0;
 
-        public decimal AugmentedValue
-        {
-            get
+            // check gear mods
+            foreach (var mod in character.Gear.Values.Where(g => g.Mods != null).SelectMany(g => g.Mods.Where(m => m is AttributeMod a && a.AttributeName == Name)))
             {
-                return NaturalValue + AugmentedModValue;
+                modValue += mod.ModValue;
             }
+
+            // check natural mods
+            foreach (var mod in character.NaturalAugmentations.Values.Where(g => g.Mods != null).SelectMany(g => g.Mods.Where(m => m is AttributeMod a && a.AttributeName == Name)))
+            {
+                modValue += mod.ModValue;
+            }
+
+            return BaseValue + modValue;
         }
 
         public AttributeAbbr Abbr

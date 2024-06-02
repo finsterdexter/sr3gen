@@ -9,6 +9,7 @@ namespace SR3Generator.Data.Character
         public Race Race { get; set; }
         public Identity Identity { get; set; } = new Identity();
         public List<Lifestyle> Lifestyles { get; set; } = new List<Lifestyle>();
+        public long Nuyen { get; set; }
         public Dictionary<AttributeName, Attribute> Attributes { get; set; }
         public Dictionary<DicePoolType, DicePool> DicePools { get; set; } = new Dictionary<DicePoolType, DicePool>();
         public Dictionary<string, Skill> ActiveSkills { get; set; } = new Dictionary<string, Skill>();

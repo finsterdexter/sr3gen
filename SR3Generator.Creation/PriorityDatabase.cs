@@ -16,11 +16,11 @@ namespace SR3Generator.Creation
         {
             CurrentPriorities = new List<Priority>
             {
-                new Priority { Type = PriorityType.Attributes, Rank = PriorityRank.A, BenefitsGetterFunc = GetBenefits },
-                new Priority { Type = PriorityType.Skills, Rank = PriorityRank.B, BenefitsGetterFunc = GetBenefits },
-                new Priority { Type = PriorityType.Resources, Rank = PriorityRank.C, BenefitsGetterFunc = GetBenefits },
-                new Priority { Type = PriorityType.Magic, Rank = PriorityRank.D, BenefitsGetterFunc = GetBenefits },
-                new Priority { Type = PriorityType.Race, Rank = PriorityRank.E, BenefitsGetterFunc = GetBenefits }
+                new(PriorityType.Attributes, PriorityRank.A) { BenefitsGetterFunc = GetBenefits },
+                new(PriorityType.Skills, PriorityRank.B) { BenefitsGetterFunc = GetBenefits },
+                new(PriorityType.Resources, PriorityRank.C) { BenefitsGetterFunc = GetBenefits },
+                new(PriorityType.Magic, PriorityRank.D) { BenefitsGetterFunc = GetBenefits },
+                new(PriorityType.Race, PriorityRank.E) { BenefitsGetterFunc = GetBenefits }
             };
 
         }

@@ -21,6 +21,15 @@ namespace SR3Generator.Creation
         public CharacterBuilder()
         {
             Character = new Character();
+            var initialPriorities = new List<Priority>
+            {
+                new Priority(PriorityType.Race, PriorityRank.A),
+                new Priority(PriorityType.Magic, PriorityRank.B),
+                new Priority(PriorityType.Attributes, PriorityRank.C),
+                new Priority(PriorityType.Skills, PriorityRank.D),
+                new Priority(PriorityType.Resources, PriorityRank.E)
+            };
+            this.WithPriorities(initialPriorities);
         }
 
         public CharacterBuilder WithPriorities(List<Priority> priorities)
@@ -54,14 +63,6 @@ namespace SR3Generator.Creation
         public CharacterBuilder WithRace(Race race)
         {
             Character.Race = race;
-            foreach (var (name, att) in Character.Attributes)
-            {
-                att.RaceModValue = 0;
-            }
-            foreach (var attMod in race.AttributeMods)
-            {
-                Character.Attributes[attMod.AttributeName].RaceModValue += attMod.ModValue;
-            }
 
             // manage troll dermal armor
             if (race.Name == RaceName.Troll)
@@ -76,11 +77,7 @@ namespace SR3Generator.Creation
                     Rating = 1,
                     Mods = new List<Mod>
                     {
-                        new AttributeMod
-                        {
-                            AttributeName = AttributeName.Body,
-                            ModValue = 1
-                        }
+                        new AttributeMod(AttributeName.Body, 1)
                     }
                 };
                 this.AddNaturalAugmentation(dermalArmor);
@@ -103,34 +100,6 @@ namespace SR3Generator.Creation
         public CharacterBuilder AddGear(Equipment item)
         {
             Character.Gear.Add(Guid.NewGuid(), item);
-
-            // process gear mods
-            if (item is Augmentation)
-            {
-                var aug = item as Augmentation;
-                foreach (var mod in aug.Mods)
-                {
-                    if (mod is AttributeMod)
-                    {
-                        var attMod = mod as AttributeMod;
-                        Character.Attributes[attMod.AttributeName].AugmentedModValue += attMod.ModValue;
-                    }
-                    if (mod is SkillMod)
-                    {
-                        var skillMod = mod as SkillMod;
-                        if (Character.ActiveSkills.ContainsKey(skillMod.SkillName))
-                        {
-                            Character.ActiveSkills[skillMod.SkillName].AugmentedModValue += skillMod.ModValue;
-                        }
-                        else if (Character.KnowledgeSkills.ContainsKey(skillMod.SkillName))
-                        {
-                            Character.KnowledgeSkills[skillMod.SkillName].AugmentedModValue += skillMod.ModValue;
-                        }
-                    }
-                    // TODO: add other mod types
-                }
-            }
-
             return this;
         }
         public CharacterBuilder RemoveGear(Guid equipmentId)
@@ -139,67 +108,51 @@ namespace SR3Generator.Creation
             {
                 return this;
             }
-
-            // process gear mods
-            if (item is Augmentation)
-            {
-                var aug = item as Augmentation;
-                foreach (var mod in aug.Mods)
-                {
-                    if (mod is AttributeMod)
-                    {
-                        var attMod = mod as AttributeMod;
-                        Character.Attributes[attMod.AttributeName].AugmentedModValue -= attMod.ModValue;
-                    }
-                    if (mod is SkillMod)
-                    {
-                        var skillMod = mod as SkillMod;
-                        if (Character.ActiveSkills.ContainsKey(skillMod.SkillName))
-                        {
-                            Character.ActiveSkills[skillMod.SkillName].AugmentedModValue -= skillMod.ModValue;
-                        }
-                        else if (Character.KnowledgeSkills.ContainsKey(skillMod.SkillName))
-                        {
-                            Character.KnowledgeSkills[skillMod.SkillName].AugmentedModValue -= skillMod.ModValue;
-                        }
-                    }
-                }
-            }
-
             Character.Gear.Remove(equipmentId);
+            return this;
+        }
+        public CharacterBuilder AddNuyen(long nuyen)
+        {
+            Character.Nuyen += nuyen;
+            return this;
+        }
+        public CharacterBuilder RemoveNuyen(long nuyen)
+        {
+            Character.Nuyen -= nuyen;
+            return this;
+        }
+        public CharacterBuilder BuyGear(Equipment item, bool useStreetIndex = false)
+        {
+            var costm = item.Cost * (useStreetIndex ? item.StreetIndex : 1);
+            long cost = (long)Math.Round(costm, MidpointRounding.AwayFromZero);
+
+            RemoveNuyen(cost).AddGear(item);
+            return this;
+        }
+        public CharacterBuilder SellGear(Guid equipmentId, bool useStreetIndex = false)
+        {
+            if (Character.Gear.TryGetValue(equipmentId, out var item) == false)
+            {
+                return this;
+            }
+            var costm = item.Cost * (useStreetIndex ? item.StreetIndex : 1);
+            long cost = (long)Math.Round(costm, MidpointRounding.AwayFromZero);
+
+            AddNuyen(cost).RemoveGear(equipmentId);
             return this;
         }
 
         public CharacterBuilder AddNaturalAugmentation(Augmentation item)
         {
             Character.NaturalAugmentations.Add(item.Name, item);
-            foreach (var mod in item.Mods)
-            {
-                if (mod is AttributeMod)
-                {
-                    var attMod = mod as AttributeMod;
-                    Character.Attributes[attMod.AttributeName].AugmentedModValue += attMod.ModValue;
-                }
-            }
             return this;
         }
-
         public CharacterBuilder RemoveNaturalAugmentation(string name)
         {
             if (Character.NaturalAugmentations.TryGetValue(name, out var item) == false)
             {
                 return this;
             }
-
-            foreach (var mod in item.Mods)
-            {
-                if (mod is AttributeMod)
-                {
-                    var attMod = mod as AttributeMod;
-                    Character.Attributes[attMod.AttributeName].AugmentedModValue -= attMod.ModValue;
-                }
-            }
-
             Character.NaturalAugmentations.Remove(name);
             return this;
         }

@@ -9,27 +9,39 @@ namespace SR3Generator.Data.Character
     public abstract class Mod
     {
         public int ModValue { get; set; }
-
-        public abstract void Apply(Character character);
     }
 
     public class SkillMod : Mod
     {
         public string SkillName { get; set; }
 
-        public override void Apply(Character character)
+        public SkillMod(string skillName, int modValue)
         {
-            var skill = character.ActiveSkills.First(s => s.Name == SkillName);
-            if (skill == null) skill = character.KnowledgeSkills.First(s => s.Name == SkillName);
-            if (skill != null)
-            {
-                skill.AugmentedModValue += ModValue;
-            }
+            SkillName = skillName;
+            ModValue = modValue;
         }
+
     }
 
     public class AttributeMod : Mod
     {
         public AttributeName AttributeName { get; set; }
+
+        public AttributeMod(AttributeName attributeName, int modValue)
+        {
+            AttributeName = attributeName;
+            ModValue = modValue;
+        }
+    }
+
+    public class DicePoolMod : Mod
+    {
+        public DicePoolType DicePoolType { get; set; }
+
+        public DicePoolMod(DicePoolType dicePoolType, int modValue)
+        {
+            DicePoolType = dicePoolType;
+            ModValue = modValue;
+        }
     }
 }
