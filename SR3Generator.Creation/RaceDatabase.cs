@@ -56,11 +56,6 @@ namespace SR3Generator.Creation
                 new Race {Name = RaceName.Troll,
                     AttributeMods = new List<AttributeMod>()
                     {
-                        //new AttributeMod {AttributeName = AttributeName.Body, ModValue = 5},
-                        //new AttributeMod {AttributeName = AttributeName.Quickness, ModValue = -1},
-                        //new AttributeMod {AttributeName = AttributeName.Strength, ModValue = 4},
-                        //new AttributeMod {AttributeName = AttributeName.Intelligence, ModValue = -2},
-                        //new AttributeMod {AttributeName = AttributeName.Charisma, ModValue = -2},
                         new(AttributeName.Body, 5),
                         new(AttributeName.Quickness, -1),
                         new(AttributeName.Strength, 4),

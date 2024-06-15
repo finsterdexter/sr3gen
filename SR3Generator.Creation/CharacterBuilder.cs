@@ -2,7 +2,10 @@
 using SR3Generator.Data.Character;
 using SR3Generator.Data.Character.Creation;
 using SR3Generator.Data.Gear;
+using System.Diagnostics;
+using System;
 using Attribute = SR3Generator.Data.Character.Attribute;
+using SR3Generator.Data.Magic;
 
 namespace SR3Generator.Creation
 {
@@ -157,6 +160,7 @@ namespace SR3Generator.Creation
             return this;
         }
 
+        // not sure if these Add/Remove skills functions are necessary
         public CharacterBuilder AddActiveSkill(Skill skill)
         {
             Character.ActiveSkills.Add(skill.Name, skill);
@@ -167,7 +171,6 @@ namespace SR3Generator.Creation
             Character.ActiveSkills.Remove(name);
             return this;
         }
-
         public CharacterBuilder AddKnowledgeSkill(Skill skill)
         {
             Character.KnowledgeSkills.Add(skill.Name, skill);
@@ -176,6 +179,199 @@ namespace SR3Generator.Creation
         public CharacterBuilder RemoveKnowledgeSkill(string name)
         {
             Character.KnowledgeSkills.Remove(name);
+            return this;
+        }
+
+        // spend karma functions, attributes, skills, magic, etc.
+        public CharacterBuilder AwardKarma(int karma)
+        {
+            // every twentieth (tenth for humans) karma point goes into the karma pool
+            var raceMod = Character.Race.Name == RaceName.Human ? 10 : 20;
+            int karmaPoolAdd = ((Character.TotalKarma + karma) % raceMod) - (Character.TotalKarma % raceMod);
+            int karmaAdd = karma - karmaPoolAdd;
+            var karmaOp = new KarmaOperation
+            {
+                Type = KarmaOperationType.Gain,
+                KarmaChangeValue = karma,
+                Description = $"Gain {karma} Karma, {karmaPoolAdd} went to Karma Pool"
+            };
+            Character.TotalKarma += karma;
+            Character.SpentKarma += karmaPoolAdd;
+            Character.DicePools[DicePoolType.Karma].Value += karmaPoolAdd;
+
+            return this;
+        }
+        public CharacterBuilder ImproveAttribute(AttributeName name, int newValue)
+        {
+            // calculate karma needed to improve attribute
+            var karmaCost = 0;
+            var limit = Character.Attributes[name].GetRacialModifiedLimit(Character);
+            var maximum = Character.Attributes[name].GetRacialAttributeMaximum(Character);
+            if (newValue > maximum)
+            {
+                return this;
+            }
+            if (newValue > Character.Attributes[name].BaseValue + 1)
+            {
+                return this;
+            }
+            if (newValue <= maximum)
+            {
+                karmaCost = newValue * 3;
+            }
+            if (newValue <= limit)
+            {
+                karmaCost = newValue * 2;
+            }
+            if (Character.RemainingKarma < karmaCost)
+            {
+                return this;
+            }
+
+            // change values
+            var karmaOp = new KarmaOperation
+            {
+                Type = KarmaOperationType.Spend,
+                KarmaChangeValue = karmaCost,
+                Description = $"Improve Attribute {name} to {newValue}"
+            };
+            Character.KarmaOperations.Add(karmaOp);
+            Character.SpentKarma += karmaCost;
+            Character.Attributes[name].BaseValue = newValue;
+
+            return this;
+        }
+        public CharacterBuilder ImproveExistingSkill(string name, int newValue)
+        {
+            Skill? skill;
+            if (!Character.ActiveSkills.TryGetValue(name, out skill) && !Character.KnowledgeSkills.TryGetValue(name, out skill))
+            {
+                return this;
+            }
+            var attribute = Character.Attributes[skill.Attribute];
+
+            // A specialization rating may not be more than twice its base skill rating(with the exception of base skills of 1
+            // with specializations of 3); the base skills must be raised before the specialization can be raised further.
+            if (skill.IsSpecialization)
+            {
+                Skill? baseSkill;
+                if (!Character.ActiveSkills.TryGetValue(name, out baseSkill) && !Character.KnowledgeSkills.TryGetValue(name, out baseSkill))
+                {
+                    return this;
+                }
+                if (newValue > 2 * baseSkill.BaseValue && baseSkill.BaseValue > 1 || newValue > 3 && baseSkill.BaseValue == 1)
+                {
+                    return this;
+                }
+            }
+
+            var karmaCost = GetImproveSkillCost(newValue, attribute.BaseValue, skill.IsSpecialization, skill.Type);
+            if (Character.RemainingKarma < karmaCost)
+            {
+                return this;
+            }
+
+            // change values
+            var karmaOp = new KarmaOperation()
+            {
+                Type = KarmaOperationType.Spend,
+                KarmaChangeValue = karmaCost,
+                Description = $"Improve Skill {name} to {newValue}"
+            };
+            Character.KarmaOperations.Add(karmaOp);
+            Character.SpentKarma += karmaCost;
+            skill.BaseValue = newValue;
+
+            return this;
+        }
+        private int GetImproveSkillCost(int newSkillValue, int currentAttributeValue, bool isSpecialization, SkillType skillType)
+        {
+            double costMultiplier = 0;
+            if (newSkillValue > 2 * currentAttributeValue)
+            {
+                costMultiplier = 2.5;
+            }
+            if (newSkillValue <= 2 * currentAttributeValue)
+            {
+                costMultiplier = 2;
+            }
+            if (newSkillValue <= currentAttributeValue)
+            {
+                costMultiplier = 1.5;
+            }
+            if (isSpecialization)
+            {
+                costMultiplier -= 1;
+            }
+            else if (skillType == SkillType.Knowledge || skillType == SkillType.Language)
+            {
+                costMultiplier -= 0.5;
+            }
+
+            var karmaCost = (int)Math.Round(newSkillValue * costMultiplier, MidpointRounding.AwayFromZero);
+            return karmaCost;
+        }
+        public CharacterBuilder ImproveNewSkill(string name)
+        {
+            // get skill from SkillDatabase by name
+            Skill? skill;
+            if (SkillDatabase.ActiveSkills.TryGetValue(name, out skill) == false && SkillDatabase.KnowledgeSkills.TryGetValue(name, out skill) == false)
+            {
+                return this;
+            }
+
+            if (skill.IsSpecialization)
+            {
+                var baseSkill = skill.Type == SkillType.Active ? Character.ActiveSkills[skill.BaseSkillName] : Character.KnowledgeSkills[skill.BaseSkillName];
+                var attribute = Character.Attributes[skill.Attribute];
+                var karmaCost = GetImproveSkillCost(baseSkill.BaseValue + 1, attribute.BaseValue, skill.IsSpecialization, skill.Type);
+                if (Character.RemainingKarma < karmaCost)
+                {
+                    return this;
+                }
+                var karmaOp = new KarmaOperation()
+                {
+                    Type = KarmaOperationType.Spend,
+                    KarmaChangeValue = karmaCost,
+                    Description = $"Add New Skill Specialization {name} to {baseSkill.BaseValue + 1}"
+                };
+                Character.KarmaOperations.Add(karmaOp);
+                Character.SpentKarma += karmaCost;
+                skill.BaseValue = baseSkill.BaseValue + 1;
+                if (skill.Type == SkillType.Active)
+                {
+                    Character.ActiveSkills.Add(skill.Name, skill);
+                }
+                else
+                {
+                    Character.KnowledgeSkills.Add(skill.Name, skill);
+                }
+            }
+            else
+            {
+                if (Character.RemainingKarma < 1)
+                {
+                    return this;
+                }
+                var karmaOp = new KarmaOperation()
+                {
+                    Type = KarmaOperationType.Spend,
+                    KarmaChangeValue = 1,
+                    Description = $"Add New Skill {name} to 1"
+                };
+                Character.KarmaOperations.Add(karmaOp);
+                Character.SpentKarma += 1;
+                skill.BaseValue = 1;
+                if (skill.Type == SkillType.Active)
+                {
+                    Character.ActiveSkills.Add(name, skill);
+                }
+                else
+                {
+                    Character.KnowledgeSkills.Add(name, skill);
+                }
+            }
+
             return this;
         }
 

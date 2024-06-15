@@ -32,6 +32,23 @@ namespace SR3Generator.Data.Character
             return BaseValue + modValue;
         }
 
+        public int GetRacialModifiedLimit(Character character)
+        {
+            // get natural mod if there is one
+            int modValue = 0;
+            foreach (var mod in character.NaturalAugmentations.Values.Where(g => g.Mods != null).SelectMany(g => g.Mods.Where(m => m is AttributeMod a && a.AttributeName == Name)))
+            {
+                modValue += mod.ModValue;
+            }
+
+            return 6 + modValue;
+        }
+
+        public int GetRacialAttributeMaximum(Character character)
+        {
+            return (int)Math.Round(GetRacialModifiedLimit(character) * 1.5, 0, MidpointRounding.AwayFromZero);
+        }
+
         public AttributeAbbr Abbr
         {
             get

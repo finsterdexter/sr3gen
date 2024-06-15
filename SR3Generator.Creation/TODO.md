@@ -21,3 +21,6 @@
 		- Grouping/organizing mods becomes a UI problem
 	2. Implement a modification property for slot, and a property to gear for slot capacity.
 
+[] Data loading from json in Database classes
+
+[] Add logs for all unexpected returns in CharacterBuilder

@@ -6,6 +6,15 @@ namespace SR3Generator.Data.Character
     public class Character
     {
         public string PlayerName { get; set; } = string.Empty;
+        public int TotalKarma { get; set; }
+        public int SpentKarma { get; set; }
+        public int RemainingKarma { 
+            get
+            {
+                return TotalKarma - SpentKarma;
+            }
+        }
+        public List<KarmaOperation> KarmaOperations { get; set; } = new List<KarmaOperation>();
         public Race Race { get; set; }
         public Identity Identity { get; set; } = new Identity();
         public List<Lifestyle> Lifestyles { get; set; } = new List<Lifestyle>();

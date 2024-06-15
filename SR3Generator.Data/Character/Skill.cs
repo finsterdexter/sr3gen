@@ -9,9 +9,11 @@ namespace SR3Generator.Data.Character
     public class Skill
     {
         public string Name { get; set; }
+        public SkillType Type { get; set; }
         public AttributeName Attribute { get; set; }
         public int BaseValue { get; set; }
-        public string? Specialization { get; set; }
+        public bool IsSpecialization { get; set; }
+        public string? BaseSkillName { get; set; }
 
         public Skill(string name, AttributeName attribute)
         {
@@ -37,5 +39,12 @@ namespace SR3Generator.Data.Character
 
             return BaseValue + modValue;
         }
+    }
+
+    public enum SkillType
+    {
+        Active,
+        Knowledge,
+        Language
     }
 }
