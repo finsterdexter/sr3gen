@@ -12,7 +12,7 @@ namespace SR3Generator.Creation.Test
         [InlineData(5, 0, 20, 23, 3)]
         [InlineData(0, 0, 12, 11, 2)] // Brynn example
         [InlineData(12, 1, 9, 19, 2)] // Brynn example
-        public void AwardKarma_ToHuman_ShouldHaveCorrectAmountsInKarmaPool(int totalKarma, int spentKarma, int awardedKarma, int newRemainingKarma, int newKarmaPool)
+        public void AwardKarma_ToHuman_ShouldHaveCorrectKarmaAmounts(int totalKarma, int spentKarma, int awardedKarma, int newRemainingKarma, int newKarmaPool)
         {
             var builder = new CharacterBuilder();
             var character = builder
@@ -34,7 +34,7 @@ namespace SR3Generator.Creation.Test
         [InlineData(9, 0, 1, 10, 1)]
         [InlineData(9, 9, 1, 1, 1)]
         [InlineData(5, 0, 20, 24, 2)]
-        public void AwardKarma_ToNonHuman_ShouldHaveCorrectAmountsInKarmaPool(int totalKarma, int spentKarma, int awardedKarma, int newRemainingKarma, int newKarmaPool)
+        public void AwardKarma_ToNonHuman_ShouldHaveCorrectKarmaAmounts(int totalKarma, int spentKarma, int awardedKarma, int newRemainingKarma, int newKarmaPool)
         {
             var builder = new CharacterBuilder();
             var character = builder
