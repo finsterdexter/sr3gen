@@ -21,5 +21,6 @@ namespace SR3Generator.Data.Gear
         public string Notes { get; set; }
         public int? Rating { get; set; }
         public List<Mod> Mods { get; set; } = new List<Mod>();
+        public bool IsEquipped { get; set; }
     }
 }

@@ -187,7 +187,7 @@ namespace SR3Generator.Creation
         {
             // every twentieth (tenth for humans) karma point goes into the karma pool
             var raceMod = Character.Race.Name == RaceName.Human ? 10 : 20;
-            int karmaPoolAdd = ((Character.TotalKarma + karma) % raceMod) - (Character.TotalKarma % raceMod);
+            int karmaPoolAdd = ((Character.TotalKarma + karma) / raceMod) - (Character.TotalKarma / raceMod);
             int karmaAdd = karma - karmaPoolAdd;
             var karmaOp = new KarmaOperation
             {
@@ -195,6 +195,7 @@ namespace SR3Generator.Creation
                 KarmaChangeValue = karma,
                 Description = $"Gain {karma} Karma, {karmaPoolAdd} went to Karma Pool"
             };
+            Character.KarmaOperations.Add(karmaOp);
             Character.TotalKarma += karma;
             Character.SpentKarma += karmaPoolAdd;
             Character.DicePools[DicePoolType.Karma].Value += karmaPoolAdd;
@@ -377,6 +378,30 @@ namespace SR3Generator.Creation
 
         public Character Build()
         {
+            // calculate base reaction
+            Character.Attributes[AttributeName.Reaction].BaseValue = 
+                (Character.Attributes[AttributeName.Intelligence].BaseValue + Character.Attributes[AttributeName.Quickness].BaseValue) / 2;
+
+            // calculate DicePools
+            Character.DicePools[DicePoolType.Combat].Value = 
+                (Character.Attributes[AttributeName.Intelligence].BaseValue + Character.Attributes[AttributeName.Quickness].BaseValue + Character.Attributes[AttributeName.Willpower].BaseValue) / 2;
+            Character.DicePools[DicePoolType.Spell].Value = 
+                (Character.Attributes[AttributeName.Intelligence].BaseValue + Character.Attributes[AttributeName.Willpower].BaseValue + Character.Attributes[AttributeName.Magic].BaseValue) / 3;
+            var deck = Character.Gear.Values.FirstOrDefault(g => g is Cyberdeck && g.IsEquipped);
+            if (deck != null)
+            {
+                Character.DicePools[DicePoolType.Hacking].Value = 
+                    (Character.Attributes[AttributeName.Intelligence].BaseValue + ((Cyberdeck)deck).MPCP) / 3;
+            }
+            var vcr = Character.Gear.Values.FirstOrDefault(g => g is VehicleControlRig && g.IsEquipped);
+            if (vcr != null && vcr.Rating.HasValue)
+            {
+                Character.DicePools[DicePoolType.Control].Value = 
+                    (Character.Attributes[AttributeName.Reaction].BaseValue + vcr.Rating.Value * 2) / 3;
+            }
+            Character.DicePools[DicePoolType.AstralCombat].Value = 
+                (Character.Attributes[AttributeName.Intelligence].BaseValue + Character.Attributes[AttributeName.Willpower].BaseValue + Character.Attributes[AttributeName.Charisma].BaseValue) / 2;
+
             return Character;
         }
     }

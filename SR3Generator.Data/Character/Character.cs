@@ -65,6 +65,17 @@ namespace SR3Generator.Data.Character
                 { AttributeName.Reaction, new Attribute { Name = AttributeName.Reaction, BaseValue = 1, Type = AttributeType.Combat } },
                 { AttributeName.Initiative, new Attribute { Name = AttributeName.Initiative, BaseValue = 1, Type = AttributeType.Combat } },
             };
+
+            DicePools = new Dictionary<DicePoolType, DicePool>()
+            {
+                { DicePoolType.Karma, new DicePool(DicePoolType.Karma) {Value = 1} },
+                { DicePoolType.Combat, new DicePool(DicePoolType.Combat) {Value = 1} },
+                { DicePoolType.Spell, new DicePool(DicePoolType.Spell) {Value = 0} },
+                { DicePoolType.Hacking, new DicePool(DicePoolType.Hacking) {Value = 0} },
+                { DicePoolType.Control, new DicePool(DicePoolType.Control) {Value = 1} },
+                { DicePoolType.AstralCombat, new DicePool(DicePoolType.AstralCombat) {Value = 1} },
+                { DicePoolType.Task, new DicePool(DicePoolType.Task) {Value = 0} },
+            };
         }
     }
 }
