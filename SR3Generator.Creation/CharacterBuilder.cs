@@ -387,11 +387,11 @@ namespace SR3Generator.Creation
                 (Character.Attributes[AttributeName.Intelligence].BaseValue + Character.Attributes[AttributeName.Quickness].BaseValue + Character.Attributes[AttributeName.Willpower].BaseValue) / 2;
             Character.DicePools[DicePoolType.Spell].Value = 
                 (Character.Attributes[AttributeName.Intelligence].BaseValue + Character.Attributes[AttributeName.Willpower].BaseValue + Character.Attributes[AttributeName.Magic].BaseValue) / 3;
-            var deck = Character.Gear.Values.FirstOrDefault(g => g is Cyberdeck && g.IsEquipped);
-            if (deck != null)
+            var equippedDeck = Character.Gear.Values.FirstOrDefault(g => g is Cyberdeck && g.IsEquipped);
+            if (equippedDeck != null)
             {
                 Character.DicePools[DicePoolType.Hacking].Value = 
-                    (Character.Attributes[AttributeName.Intelligence].BaseValue + ((Cyberdeck)deck).MPCP) / 3;
+                    (Character.Attributes[AttributeName.Intelligence].BaseValue + ((Cyberdeck)equippedDeck).MPCP) / 3;
             }
             var vcr = Character.Gear.Values.FirstOrDefault(g => g is VehicleControlRig && g.IsEquipped);
             if (vcr != null && vcr.Rating.HasValue)

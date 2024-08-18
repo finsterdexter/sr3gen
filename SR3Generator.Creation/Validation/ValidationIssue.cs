@@ -29,5 +29,6 @@ namespace SR3Generator.Creation.Validation
         Magic,
         Equipment,
         Race,
+        Cyberdeck,
     }
 }

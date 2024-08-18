@@ -7,29 +7,19 @@ using System.Threading.Tasks;
 
 namespace SR3Generator.Creation.Validation
 {
-    internal class CharacterPriorityValidator : ICharacterValidator
+    internal class CharacterPriorityValidator : CharacterValidatorBase
     {
-        public List<ValidationIssue> Issues { get; set; }
-
-        public (bool isValid, List<ValidationIssue> issues) Validate(CharacterBuilder builder)
+        public override (bool isValid, List<ValidationIssue> issues) Validate(CharacterBuilder builder)
         {
             this
                 .ValidateAttributes(builder)
                 .ValidateRace(builder)
+                .ValidateMagicAspect(builder)
                 ;
-            
-
-            if (Issues.Any(vi => vi.Level == ValidationIssueLevel.Error))
-            {
-                return (false, Issues);
-            }
-            else
-            { 
-                return (true, Issues);
-            }
+            return IssueCheck();
         }
 
-        public CharacterPriorityValidator ValidateAttributes(CharacterBuilder builder)
+        private CharacterPriorityValidator ValidateAttributes(CharacterBuilder builder)
         {
             var character = builder.Build();
 
@@ -81,7 +71,7 @@ namespace SR3Generator.Creation.Validation
             return this;
         }
 
-        public CharacterPriorityValidator ValidateRace(CharacterBuilder builder)
+        private CharacterPriorityValidator ValidateRace(CharacterBuilder builder)
         {
             if (builder.Character.Race != null && !builder.RacesAllowed.Any(r => r.Name == builder.Character.Race.Name))
             {
@@ -90,7 +80,7 @@ namespace SR3Generator.Creation.Validation
             return this;
         }
 
-        public CharacterPriorityValidator ValidateMagicAspect(CharacterBuilder builder)
+        private CharacterPriorityValidator ValidateMagicAspect(CharacterBuilder builder)
         {
             if (builder.Character.MagicAspect != null && !builder.MagicAspectsAllowed.Any(ma => ma.Name == builder.Character.MagicAspect.Name))
             {
@@ -98,5 +88,6 @@ namespace SR3Generator.Creation.Validation
             }
             return this;
         }
+
     }
 }
