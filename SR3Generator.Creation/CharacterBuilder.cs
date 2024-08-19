@@ -99,6 +99,45 @@ namespace SR3Generator.Creation
             return this;
         }
 
+        public CharacterBuilder AddContact(Contact contact)
+        {
+            Character.Contacts.Add(Guid.NewGuid(), contact);
+            return this;
+        }
+        public CharacterBuilder RemoveContact(Guid contactId)
+        {
+            Character.Contacts.Remove(contactId);
+            return this;
+        }
+        public CharacterBuilder BuyContact(Contact contact)
+        {
+            var cost = contact.Level switch
+            {
+                ContactLevel.Contact => 5000,
+                ContactLevel.Buddy => 10000,
+                ContactLevel.FriendForLife => 200000,
+                _ => 0
+            };
+            RemoveNuyen(cost).AddContact(contact);
+            return this;
+        }
+        public CharacterBuilder SellContact(Guid contactId)
+        {
+            if (Character.Contacts.TryGetValue(contactId, out var contact) == false)
+            {
+                return this;
+            }
+            var cost = contact.Level switch
+            {
+                ContactLevel.Contact => 5000,
+                ContactLevel.Buddy => 10000,
+                ContactLevel.FriendForLife => 200000,
+                _ => 0
+            };
+            AddNuyen(cost).RemoveContact(contactId);
+            return this;
+        }
+
         // TODO: split this out into different types of gear, like cyberware, foci, etc.?
         public CharacterBuilder AddGear(Equipment item)
         {

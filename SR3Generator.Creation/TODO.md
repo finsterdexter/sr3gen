@@ -10,12 +10,12 @@
 		- include Persona properties, hacking pool
 	- Program
 
-[] Add Contacts
+[x] Add Contacts
 
 [] Add Edges/Flaws
 
 [] Add Foci
-[] Add Spells
+[] Add Spells (validations?)
 [] Add other magic stuff?
 
 [] Implement modifications (in 2 phases)
@@ -35,3 +35,7 @@
 [] Cyberterminal construction builder (similar to character builder?)
 
 [] Vehicle construction builder
+
+[] Ally Spirits
+
+[] Point-based character creation

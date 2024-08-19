@@ -41,12 +41,13 @@ namespace SR3Generator.Data.Character
         public Dictionary<string, AdeptPower> AdeptPowers { get; set; } = new Dictionary<string, AdeptPower>();
         public Dictionary<Guid, BondedSpirit> BondedSpirits { get; set; } = new Dictionary<Guid, BondedSpirit>();
         public int WatcherSpirits { get; set; }
-        public AllySpirit AllySpirit { get; set; } = null;
+        public AllySpirit? AllySpirit { get; set; } = null;
 
 
         // Foci
         // Vehicles
         // Contacts
+        public Dictionary<Guid, Contact> Contacts { get; set; } = new Dictionary<Guid, Contact>();
 
         public Character()
         {
