@@ -5,7 +5,7 @@ using SR3Generator.Data.Gear;
 using System.Diagnostics;
 using System;
 using Attribute = SR3Generator.Data.Character.Attribute;
-using SR3Generator.Data.Magic;
+using SR3Generator.Database;
 
 namespace SR3Generator.Creation
 {

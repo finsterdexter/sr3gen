@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static SR3Generator.Data.Character.Attribute;
 
 namespace SR3Generator.Data.Character
 {

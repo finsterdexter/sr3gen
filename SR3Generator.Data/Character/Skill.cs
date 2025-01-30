@@ -10,12 +10,16 @@ namespace SR3Generator.Data.Character
     {
         public string Name { get; set; }
         public SkillType Type { get; set; }
-        public AttributeName Attribute { get; set; }
+        public Attribute.AttributeName Attribute { get; set; }
         public int BaseValue { get; set; }
         public bool IsSpecialization { get; set; }
         public string? BaseSkillName { get; set; }
 
-        public Skill(string name, AttributeName attribute)
+        public string Book { get; set; }
+        public string Page { get; set; }
+        public string Notes { get; set; }
+
+        public Skill(string name, Attribute.AttributeName attribute)
         {
             Name = name;
             Attribute = attribute;

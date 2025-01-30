@@ -12,10 +12,10 @@
 
 [x] Add Contacts
 
-[] Add Edges/Flaws
-
 [] Add Foci
+
 [] Add Spells (validations?)
+
 [] Add other magic stuff?
 
 [] Implement modifications (in 2 phases)
@@ -30,7 +30,7 @@
 
 ## Phase 2 features
 
-[] Detailed Lifestyle stuff
+[] Advanced Lifestyle stuff
 
 [] Cyberterminal construction builder (similar to character builder?)
 
@@ -38,4 +38,8 @@
 
 [] Ally Spirits
 
+### Shadowrun Companion
+
 [] Point-based character creation
+
+[] Add Edges/Flaws

@@ -14,7 +14,7 @@ namespace SR3Generator.Data.Magic
         public string Name { get; set; }
         public int Force { get; set; }
         public SpiritType Type { get; set; }
-        public Dictionary<AttributeName, Func<int,Attribute>> AttributeFuncs { get; set; }
+        public Dictionary<Attribute.AttributeName, Func<int,Attribute>> AttributeFuncs { get; set; }
         public Dictionary<DicePoolType, DicePool> DicePools { get; set; } = new Dictionary<DicePoolType, DicePool>();
         public List<string> Attacks { get; set; }
         public List<CritterPower> Powers { get; set; }

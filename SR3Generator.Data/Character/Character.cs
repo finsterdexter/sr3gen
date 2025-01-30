@@ -1,5 +1,6 @@
 ﻿using SR3Generator.Data.Gear;
 using SR3Generator.Data.Magic;
+using static SR3Generator.Data.Character.Attribute;
 
 namespace SR3Generator.Data.Character
 {

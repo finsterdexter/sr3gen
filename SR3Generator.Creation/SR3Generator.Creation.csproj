@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<TargetFramework>net8.0</TargetFramework>
@@ -7,6 +7,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\SR3Generator.Database\SR3Generator.Database.csproj" />
 		<ProjectReference Include="..\SR3Generator.Data\SR3Generator.Data.csproj" />
 	</ItemGroup>
 

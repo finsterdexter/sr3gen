@@ -87,46 +87,77 @@ namespace SR3Generator.Data.Character
                     return AttributeAbbr.BOD;
             }
         }
+
+        public static AttributeName GetName(AttributeAbbr abbr)
+        {
+            switch (abbr)
+            {
+                case AttributeAbbr.BOD:
+                    return AttributeName.Body;
+                case AttributeAbbr.QCK:
+                    return AttributeName.Quickness;
+                case AttributeAbbr.STR:
+                    return AttributeName.Strength;
+                case AttributeAbbr.WIL:
+                    return AttributeName.Willpower;
+                case AttributeAbbr.INT:
+                    return AttributeName.Intelligence;
+                case AttributeAbbr.CHA:
+                    return AttributeName.Charisma;
+                case AttributeAbbr.INI:
+                    return AttributeName.Initiative;
+                case AttributeAbbr.REA:
+                    return AttributeName.Reaction;
+                case AttributeAbbr.ESS:
+                    return AttributeName.Essence;
+                case AttributeAbbr.BioIndex:
+                    return AttributeName.BioIndex;
+                case AttributeAbbr.MAG:
+                    return AttributeName.Magic;
+                default:
+                    return AttributeName.Body;
+            }
+        }
+
+        public enum AttributeType
+        {
+            Physical,
+            Mental,
+            Combat,
+            Special
+        }
+
+        public enum AttributeName
+        {
+            Body,
+            Quickness,
+            Strength,
+            Willpower,
+            Intelligence,
+            Charisma,
+            Initiative,
+            Reaction,
+            Essence,
+            BioIndex,
+            Magic
+        }
+
+        public enum AttributeAbbr
+        {
+            BOD,
+            QCK,
+            STR,
+            WIL,
+            INT,
+            CHA,
+            INI,
+            REA,
+            ESS,
+            BioIndex,
+            MAG
+        }
+
+
+
     }
-
-    public enum AttributeType
-    {
-        Physical,
-        Mental,
-        Combat,
-        Special
-    }
-
-    public enum AttributeName
-    {
-        Body,
-        Quickness,
-        Strength,
-        Willpower,
-        Intelligence,
-        Charisma,
-        Initiative,
-        Reaction,
-        Essence,
-        BioIndex,
-        Magic
-    }
-
-    public enum AttributeAbbr
-    {
-        BOD,
-        QCK,
-        STR,
-        WIL,
-        INT,
-        CHA,
-        INI,
-        REA,
-        ESS,
-        BioIndex,
-        MAG
-    }
-
-
-
 }
